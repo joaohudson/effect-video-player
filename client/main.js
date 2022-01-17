@@ -53,7 +53,7 @@ function draw(){
 
     const pp = video.currentTime / video.duration;
     context.fillStyle = '#224466AA';
-    context.fillRect(0, canvas.height - 40, canvas.width * pp, 25);
+    context.fillRect(0, canvas.height - 15, canvas.width * pp, 10);
     
     setTimeout(draw, 0);
 }
@@ -73,25 +73,36 @@ video.onpause = () => {
 }
 
 document.onkeydown = (e) => {
-    if(e.key == ' '){
-        if(!video.src)
-        {
-            alert('Selecione um vídeo!');
-            return;
-        }
-
-        if(video.paused)
-        video.play();
-        else
-        video.pause();
-    }
-    if(e.key == 'ArrowLeft'){
-        video.currentTime = video.currentTime - 15;
-        video.play();
-    }
-    if(e.key == 'ArrowRight'){
-        video.currentTime = video.currentTime + 15;
-        video.play();
+    
+    switch(e.key){    
+        case ' ':
+            if(!video.src)
+            {
+                alert('Selecione um vídeo!');
+                return;
+            }
+            if(video.paused)
+            video.play();
+            else
+            video.pause();
+            break;
+        case 'ArrowLeft':
+            video.currentTime = video.currentTime - 15;
+            video.play();
+            break;
+        case 'ArrowRight':
+            video.currentTime = video.currentTime + 15;
+            video.play();
+            break;
+        case 'ArrowUp':
+            video.volume += .1;
+            break;
+        case 'ArrowDown':
+            video.volume -= .1;
+            break;
+        case 'F11':
+            canvas.webkitRequestFullscreen();
+            break;
     }
 }
 
