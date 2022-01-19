@@ -2,6 +2,7 @@
 
 const videoInput = document.getElementById('videoInput');
 const videoInputMessage = document.getElementById('videoInputMessage');
+const filtersSelect = document.getElementById('filtersSelect');
 
 const video = document.createElement('video');
 
@@ -13,15 +14,26 @@ auxCanvas.width = canvas.width;
 auxCanvas.height = canvas.height;
 const auxContext = auxCanvas.getContext('2d');
 
+const state = {
+    filter: filters.None
+};
 
 video.addEventListener('play', function(){
     draw();
 },false);
 
+//init
 const playImage = await newImage('play-image.png');
 context.fillStyle = 'black';
 context.fillRect(0, 0, canvas.width, canvas.height);
 context.drawImage(playImage, 0, 0, playImage.width, playImage.height, 0, 0, canvas.width, canvas.height);
+
+for(const key of Object.keys(filters)){
+    const option = document.createElement('option');
+    option.setAttribute('value', key);
+    option.innerText = key;
+    filtersSelect.appendChild(option);
+}
 
 async function newImage(src){
     const img = new Image();
@@ -38,14 +50,13 @@ function draw(){
 
     const buffer = auxContext.getImageData(0, 0, auxCanvas.width, auxCanvas.height);
     const data = buffer.data;
+    const filter = state.filter;
 
     for(let i = 0; i < data.length; i+=4) {
-        const r = data[i];
-        const g = data[i+1];
-        const b = data[i+2];
-        data[i] = 255 - r;
-        data[i+1] = 255 - g;
-        data[i+2] = 255 - b;
+        const {r, g, b} = filter(data[i], data[i+1], data[i+2]);
+        data[i] = r;
+        data[i+1] = g;
+        data[i+2] = b;
     }
 
     buffer.data = data;
@@ -55,7 +66,7 @@ function draw(){
     context.fillStyle = '#224466AA';
     context.fillRect(0, canvas.height - 15, canvas.width * pp, 10);
     
-    setTimeout(draw, 0);
+    window.requestAnimationFrame(draw);
 }
 
 videoInput.onchange = () => {
@@ -70,6 +81,11 @@ video.onpause = () => {
     context.fillStyle = '#224466AA';
     context.textAlign = 'center';
     context.fillText(text, canvas.width / 2, canvas.height / 2);
+}
+
+filtersSelect.onchange = () => {
+    const key = filtersSelect.value;
+    state.filter = filters[key];
 }
 
 document.onkeydown = (e) => {
@@ -105,5 +121,4 @@ document.onkeydown = (e) => {
             break;
     }
 }
-
 })();

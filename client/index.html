@@ -36,6 +36,11 @@
             #videoInput{
                 visibility: hidden;
             }
+            #filtersSelect{
+                background: black;
+                color: white;
+                margin-top: 30px;
+            }
         </style>
         <title>Effect Video Player</title>
         <meta charset="utf-8">
@@ -52,8 +57,14 @@
                 <p id="videoInputMessage">No video selected</p>
                 <label id="videoInputButton" for="videoInput">Select a video</label>
             </div>
+            <div class="center">
+                <select id="filtersSelect">
+                    <option selected disabled>Filters</option>
+                </select>
+            </div>
             <input id="videoInput" type="file" accept="video/*">
         </div>
+        <script src="filters.js" type="text/javascript"></script>
         <script src="main.js" type="text/javascript"></script>
     </body>
 </html>
