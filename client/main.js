@@ -3,6 +3,7 @@
 const videoInput = document.getElementById('videoInput');
 const videoInputMessage = document.getElementById('videoInputMessage');
 const filtersSelect = document.getElementById('filtersSelect');
+const effectChecbox = document.getElementById('effectCheckbox');
 
 const video = document.createElement('video');
 
@@ -14,8 +15,12 @@ auxCanvas.width = canvas.width;
 auxCanvas.height = canvas.height;
 const auxContext = auxCanvas.getContext('2d');
 
+const DT = 1/60;
+
 const state = {
-    filter: filters.None
+    filter: filters.None,
+    particles: [],
+    particlesEnabled: true
 };
 
 //init
@@ -40,10 +45,66 @@ async function newImage(src){
     });
 }
 
-function draw(){
+function rgbaToHex(r, g, b, a){
+    return '#' + r.toString(16) + g.toString(16) + b.toString(16) + a.toString(16);
+}
+
+function disorderedRemove(array, index){
+    const value = array[index];
+    const last = array.length - 1;
+    array[index] = array[last];
+    array[last] = value;
+    array.length--;
+}
+
+function update(){
     if(video.paused || video.ended) 
         return;
 
+    draw();
+    updateParticles();
+    window.requestAnimationFrame(update);
+}
+
+function createParticle(x, y, count){
+    for(let i = 0; i < count; i++)
+    {
+        state.particles.push({
+            x: x,
+            y: y,
+            dx: -1,
+            dy: Math.random() * .6 - .3,
+            lifeTime: .6
+        });
+    }
+}
+
+function updateParticles(){
+    const prevComposite = context.globalCompositeOperation;
+    context.globalCompositeOperation = 'lighter';
+
+    for(let i = 0; i < state.particles.length; i++){
+        const p = state.particles[i];
+        p.x += p.dx;
+        p.y += p.dy;
+        p.lifeTime -= DT;
+
+        if(p.lifeTime <= 0){
+            disorderedRemove(state.particles, i);
+            i--;
+            continue;
+        }
+
+        context.beginPath();
+        context.fillStyle = rgbaToHex(220, 240, 250, p.lifeTime * 120);
+        context.arc(p.x, p.y, 7.5 * p.lifeTime, 0, 360);
+        context.fill();
+        context.closePath();
+    }
+    context.globalCompositeOperation = prevComposite;
+}
+
+function draw(){
     auxContext.drawImage(video, 0, 0, video.videoWidth, video.videoHeight, 0, 0, canvas.width, canvas.height);
 
     const buffer = auxContext.getImageData(0, 0, auxCanvas.width, auxCanvas.height);
@@ -64,7 +125,8 @@ function draw(){
     context.fillStyle = '#224466AA';
     context.fillRect(0, canvas.height - 15, canvas.width * pp, 10);
     
-    window.requestAnimationFrame(draw);
+    if(state.particlesEnabled)
+        createParticle(canvas.width * pp, canvas.height - 10, 3);
 }
 
 videoInput.onchange = () => {
@@ -74,7 +136,7 @@ videoInput.onchange = () => {
 };
 
 video.addEventListener('play', function(){
-    draw();
+    update();
 },false);
 
 video.onpause = () => {
@@ -83,6 +145,10 @@ video.onpause = () => {
     context.fillStyle = '#224466AA';
     context.textAlign = 'center';
     context.fillText(text, canvas.width / 2, canvas.height / 2);
+}
+
+effectChecbox.onclick = (e) => {
+    state.particlesEnabled = effectChecbox.checked;
 }
 
 filtersSelect.onchange = () => {
