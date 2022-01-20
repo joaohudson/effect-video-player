@@ -18,10 +18,6 @@ const state = {
     filter: filters.None
 };
 
-video.addEventListener('play', function(){
-    draw();
-},false);
-
 //init
 const playImage = await newImage('play-image.png');
 context.fillStyle = 'black';
@@ -45,7 +41,9 @@ async function newImage(src){
 }
 
 function draw(){
-    if(video.paused || video.ended) return;
+    if(video.paused || video.ended) 
+        return;
+
     auxContext.drawImage(video, 0, 0, video.videoWidth, video.videoHeight, 0, 0, canvas.width, canvas.height);
 
     const buffer = auxContext.getImageData(0, 0, auxCanvas.width, auxCanvas.height);
@@ -74,6 +72,10 @@ videoInput.onchange = () => {
     video.src = URL.createObjectURL(file);
     videoInputMessage.textContent = videoInput.value;
 };
+
+video.addEventListener('play', function(){
+    draw();
+},false);
 
 video.onpause = () => {
     const text = '| |';
