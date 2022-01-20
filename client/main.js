@@ -141,7 +141,7 @@ video.addEventListener('play', function(){
 
 video.onpause = () => {
     const text = '| |';
-    context.font = '50px sans-serif';
+    context.font = 'bold 50px sans-serif';
     context.fillStyle = '#224466AA';
     context.textAlign = 'center';
     context.fillText(text, canvas.width / 2, canvas.height / 2);
