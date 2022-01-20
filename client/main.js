@@ -91,6 +91,8 @@ filtersSelect.onchange = () => {
 }
 
 document.onkeydown = (e) => {
+
+    e.preventDefault();
     
     switch(e.key){    
         case ' ':
