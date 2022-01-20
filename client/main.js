@@ -72,8 +72,8 @@ function createParticle(x, y, count){
         state.particles.push({
             x: x,
             y: y,
-            dx: -1,
-            dy: Math.random() * .6 - .3,
+            dx: -60,
+            dy: Math.random() * 36 - 18,
             lifeTime: .6
         });
     }
@@ -85,8 +85,8 @@ function updateParticles(){
 
     for(let i = 0; i < state.particles.length; i++){
         const p = state.particles[i];
-        p.x += p.dx;
-        p.y += p.dy;
+        p.x += p.dx * DT;
+        p.y += p.dy * DT;
         p.lifeTime -= DT;
 
         if(p.lifeTime <= 0){
