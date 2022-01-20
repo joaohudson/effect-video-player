@@ -21,7 +21,7 @@
                 align-items: center;
             }
             #videoInputButtonDiv{
-                margin-top: 20px;
+                margin-top: 30px;
             }
             #videoInputButton{
                 border-radius: 20%;
@@ -41,7 +41,7 @@
             #filtersSelect{
                 background: rgb(53, 248, 79);
                 color: black;
-                margin-top: 30px;
+                margin-top: 20px;
                 font-weight: bold;
             }
         </style>
@@ -57,14 +57,14 @@
             <canvas id="canvas" width="640" height="420"></canvas>
         </div>
         <div class="center">
-            <div class="center" id="videoInputButtonDiv">
-                <p id="videoInputMessage">No video selected</p>
-                <label id="videoInputButton" for="videoInput">Select a video</label>
-            </div>
             <div class="center">
                 <select id="filtersSelect">
                     <option selected disabled>Filters</option>
                 </select>
+            </div>
+            <div class="center" id="videoInputButtonDiv">
+                <p id="videoInputMessage">No video selected</p>
+                <label id="videoInputButton" for="videoInput">Select a video</label>
             </div>
             <input id="videoInput" type="file" accept="video/*">
         </div>
