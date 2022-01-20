@@ -90,6 +90,32 @@ filtersSelect.onchange = () => {
     state.filter = filters[key];
 }
 
+canvas.onmousedown = (e) => {
+    const mx = (e.clientX - canvas.offsetLeft) * (canvas.width / canvas.clientWidth);
+    const my = (e.clientY - canvas.offsetTop) * (canvas.height / canvas.clientHeight);
+
+    //clicando na barra de progresso
+    if(my > canvas.height - 25){
+        const pp = mx / canvas.width;
+        video.currentTime = pp * video.duration;
+        video.play();
+    }
+    //qualquer outro lugar serve para play e pause
+    else{
+        if(!video.src){
+            alert('Select a video!');
+            return;
+        }
+
+        if(video.paused || video.ended){
+            video.play();
+        }
+        else{
+            video.pause();
+        }
+    }
+};
+
 document.onkeydown = (e) => {
 
     e.preventDefault();
@@ -98,7 +124,7 @@ document.onkeydown = (e) => {
         case ' ':
             if(!video.src)
             {
-                alert('Selecione um vídeo!');
+                alert('Selec a video!');
                 return;
             }
             if(video.paused)
